@@ -55,7 +55,16 @@ export class DynamoDBCommandBuilder {
     }
 
     private assembleExpression(expr: string[]) {
+        if (expr.length === 0)
+            return null;
+
         return expr.join(' ');
+    }
+
+    private storeExpression(dst: any, attr: string, expr: string[]) {
+        const expression = this.assembleExpression(expr);
+        if (expression)
+            dst[attr] = expression;
     }
 
     havingKey(name: string, value: string | number | boolean | null) {
@@ -135,14 +144,17 @@ export class DynamoDBCommandBuilder {
     }
 
     toUpdate(): UpdateItemCommandInput {
-        return {
+        const result: UpdateItemCommandInput = {
             TableName: this.table,
             Key: this.keyCriteria,
-            UpdateExpression: this.assembleExpression(this.updateExpression),
-            ConditionExpression: this.assembleExpression(this.conditionExpression),
             ExpressionAttributeValues: this.attributeValues,
             ExpressionAttributeNames: this.attributeNames
         };
+
+        this.storeExpression(result, 'UpdateExpression', this.updateExpression);
+        this.storeExpression(result, 'ConditionExpression', this.conditionExpression);
+
+        return result;
     };
 
     toGetItem(): GetItemCommandInput {
@@ -157,7 +169,6 @@ export class DynamoDBCommandBuilder {
         const result: QueryCommandInput = {
             TableName: this.table,
             KeyConditionExpression: expression,
-            FilterExpression: this.assembleExpression(this.filterExpression),
             ExpressionAttributeValues: {
                 ...this.attributeValues,
                 ...attributeValues
@@ -167,6 +178,8 @@ export class DynamoDBCommandBuilder {
                 ...attributeNames
             }
         };
+
+        this.storeExpression(result, 'FilterExpression', this.filterExpression);
 
         if (this.index)
             result.IndexName = this.index;
@@ -181,12 +194,14 @@ export class DynamoDBCommandBuilder {
     }
 
     toDeleteItem(): DeleteItemCommandInput {
-        return {
+        const result: DeleteItemCommandInput = {
             TableName: this.table,
             Key: this.keyCriteria,
-            ConditionExpression: this.assembleExpression(this.conditionExpression),
             ExpressionAttributeValues: this.attributeValues,
             ExpressionAttributeNames: this.attributeNames
         };
+
+        this.storeExpression(result, 'ConditionExpression', this.conditionExpression);
+        return result;
     }
 }
