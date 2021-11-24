@@ -45,7 +45,7 @@ export function fromDynamoDBType(value: AttributeValue | undefined) : any {
 export const fromDynamoDBObject = (src: any) => {
     const result: any = {};
     for (const k of Object.keys(src)) {
-        result[k] = fromDynamoDBObject(src[k]);
+        result[k] = fromDynamoDBType(src[k]);
     }
     return result;
 };

@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { DynamoDBCommandBuilder } from '../../../src/backend/dynamodb';
+import { DynamoDBCommandBuilder } from '../../../src/dynamodb';
 
 const testTableName = 'TEST';
 
@@ -129,7 +129,7 @@ describe('Update commands', () => {
         expect(update.Key).toBeDefined();
         expect(update.Key).toBeDefined();
         expect(update.UpdateExpression).toBe('foo = :bar2');
-        expect(update.ConditionExpression).toBe('');
+        expect(update.ConditionExpression).toBeUndefined();
         expect((update as any).FilterExpression).toBeUndefined();
         expect(update.ExpressionAttributeValues).toEqual({
             ':bar': { 'N': '1234' },
