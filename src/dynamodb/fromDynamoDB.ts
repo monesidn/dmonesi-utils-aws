@@ -15,8 +15,8 @@ export function fromDynamoDBType(value: AttributeValue | undefined) : any {
     if (!value)
         return undefined;
 
-    if (value.B)
-        return !!value.B;
+    if (value.BOOL)
+        return !!value.BOOL;
     if (value.M) {
         const result: Record<string, any> = {};
         for (const i of Object.keys(value.M)) {
