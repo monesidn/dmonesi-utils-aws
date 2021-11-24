@@ -61,10 +61,15 @@ export class DynamoDBCommandBuilder {
         return expr.join(' ');
     }
 
-    private storeExpression(dst: any, attr: string, expr: string[]) {
+    private setExpressionIfNotEmpty(dst: any, attr: string, expr: string[]) {
         const expression = this.assembleExpression(expr);
         if (expression)
             dst[attr] = expression;
+    }
+
+    private setMapIfNotEmpty(dst: any, attr: string, map: Record<string, any>) {
+        if (Object.keys(map).length > 0)
+            dst[attr] = map;
     }
 
     havingKey(name: string, value: string | number | boolean | null) {
@@ -146,13 +151,13 @@ export class DynamoDBCommandBuilder {
     toUpdate(): UpdateItemCommandInput {
         const result: UpdateItemCommandInput = {
             TableName: this.table,
-            Key: this.keyCriteria,
-            ExpressionAttributeValues: this.attributeValues,
-            ExpressionAttributeNames: this.attributeNames
+            Key: this.keyCriteria
         };
 
-        this.storeExpression(result, 'UpdateExpression', this.updateExpression);
-        this.storeExpression(result, 'ConditionExpression', this.conditionExpression);
+        this.setExpressionIfNotEmpty(result, 'UpdateExpression', this.updateExpression);
+        this.setExpressionIfNotEmpty(result, 'ConditionExpression', this.conditionExpression);
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeValues', this.attributeValues);
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeNames', this.attributeNames);
 
         return result;
     };
@@ -168,18 +173,18 @@ export class DynamoDBCommandBuilder {
         const { expression, attributeNames, attributeValues } = this.keyCriteriaToExpression();
         const result: QueryCommandInput = {
             TableName: this.table,
-            KeyConditionExpression: expression,
-            ExpressionAttributeValues: {
-                ...this.attributeValues,
-                ...attributeValues
-            },
-            ExpressionAttributeNames: {
-                ...this.attributeNames,
-                ...attributeNames
-            }
+            KeyConditionExpression: expression
         };
 
-        this.storeExpression(result, 'FilterExpression', this.filterExpression);
+        this.setExpressionIfNotEmpty(result, 'FilterExpression', this.filterExpression);
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeValues', {
+            ...this.attributeValues,
+            ...attributeValues
+        });
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeNames', {
+            ...this.attributeNames,
+            ...attributeNames
+        });
 
         if (this.index)
             result.IndexName = this.index;
@@ -196,12 +201,12 @@ export class DynamoDBCommandBuilder {
     toDeleteItem(): DeleteItemCommandInput {
         const result: DeleteItemCommandInput = {
             TableName: this.table,
-            Key: this.keyCriteria,
-            ExpressionAttributeValues: this.attributeValues,
-            ExpressionAttributeNames: this.attributeNames
+            Key: this.keyCriteria
         };
 
-        this.storeExpression(result, 'ConditionExpression', this.conditionExpression);
+        this.setExpressionIfNotEmpty(result, 'ConditionExpression', this.conditionExpression);
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeValues', this.attributeValues);
+        this.setMapIfNotEmpty(result, 'ExpressionAttributeNames', this.attributeNames);
         return result;
     }
 }

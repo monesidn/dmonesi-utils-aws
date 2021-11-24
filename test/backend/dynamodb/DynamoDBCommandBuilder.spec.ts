@@ -135,7 +135,7 @@ describe('Update commands', () => {
             ':bar': { 'N': '1234' },
             ':bar2': { 'N': '12345' }
         });
-        expect(update.ExpressionAttributeNames).toEqual({});
+        expect(update.ExpressionAttributeNames).toBeUndefined();
     });
 
     test('Simple update with version', () => {
