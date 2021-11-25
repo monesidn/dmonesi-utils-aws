@@ -29,13 +29,13 @@ export function fromDynamoDBType(value: AttributeValue | undefined) : any {
     if (value.S)
         return value.S;
     if (value.NULL === true)
-        return true;
+        return null;
     if (value.L)
         return value.L.map((i) => fromDynamoDBType(i as any));
     if (value.SS)
         return value.SS;
     if (value.NS)
-        return value.NS;
+        return value.NS.map((i) => +i);
 
 
     throw new Error(`Don't know how to unwrap DynamoDB value ${JSON.stringify(value)}`);
