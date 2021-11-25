@@ -15,26 +15,26 @@ export function fromDynamoDBType(value: AttributeValue | undefined) : any {
     if (!value)
         return undefined;
 
-    if (value.BOOL)
+    if (value.BOOL !== undefined)
         return !!value.BOOL;
-    if (value.M) {
+    if (value.M !== undefined) {
         const result: Record<string, any> = {};
         for (const i of Object.keys(value.M)) {
             result[i] = fromDynamoDBType(value.M[i] as any);
         }
         return result;
     }
-    if (value.N)
+    if (value.N !== undefined)
         return +value.N;
-    if (value.S)
+    if (value.S !== undefined)
         return value.S;
     if (value.NULL === true)
         return null;
-    if (value.L)
+    if (value.L !== undefined)
         return value.L.map((i) => fromDynamoDBType(i as any));
-    if (value.SS)
+    if (value.SS !== undefined)
         return value.SS;
-    if (value.NS)
+    if (value.NS !== undefined)
         return value.NS.map((i) => +i);
 
 

@@ -18,10 +18,15 @@ describe('fromDynamoDBType', () => {
 
         expect(result).toBe(5);
     });
-    test('Input BOOLMember', () => {
+    test('Input true BOOLMember', () => {
         const result = fromDynamoDBType({ 'BOOL': true });
 
         expect(result).toBe(true);
+    });
+    test('Input false BOOLMember', () => {
+        const result = fromDynamoDBType({ 'BOOL': false });
+
+        expect(result).toBe(false);
     });
     test('Input MMember', () => {
         const result = fromDynamoDBType({ 'M': {

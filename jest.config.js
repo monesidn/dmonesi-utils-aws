@@ -4,7 +4,7 @@ module.exports = {
     collectCoverage: true,
     reporters: [
         'default',
-        ['jest-summary-reporter', { 'failuresOnly': false }]
+        ['jest-summary-reporter', { 'failuresOnly': true }]
     ],
     roots: ['test']
 };
