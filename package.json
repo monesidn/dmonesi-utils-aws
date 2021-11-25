@@ -38,7 +38,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.41.0",
     "@aws-sdk/node-config-provider": "^3.40.0",
-    "dmonesi-utils-ts": "git+https://github.com/monesidn/dmonesi-utils-ts.git"
+    "dmonesi-utils-ts": "git+https://github.com/monesidn/dmonesi-utils-ts.git",
+    "jest-summary-reporter": "0.0.2"
   },
   "main": "./dist/index.js"
 }
